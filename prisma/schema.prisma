@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Platform {
+  YOUTUBE
+  VK
+}
+
+model Channel {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String?
+  iconUrl     String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  videos Video[]
+
+  @@index([isActive, sortOrder])
+  @@map("channels")
+}
+
+model Video {
+  id           String   @id @default(cuid())
+  title        String
+  videoId      String
+  platform     Platform @default(YOUTUBE)
+  thumbnailUrl String?
+  durationSec  Int?
+  channelId    String
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  viewCount    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@index([channelId, isActive, sortOrder])
+  @@index([channelId, isActive])
+  @@map("videos")
+}
