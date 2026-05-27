@@ -109,6 +109,14 @@ export function TvPage() {
             Программа
           </Link>
 
+          <Link
+            href="/admin/videos"
+            className="tracking-wider uppercase"
+            style={{ fontSize: "11px", color: "var(--tv-muted)", textDecoration: "none" }}
+          >
+            Админка
+          </Link>
+
           {/* Volume controls */}
           <div className="flex items-center gap-1">
             <button

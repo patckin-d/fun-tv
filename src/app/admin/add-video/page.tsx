@@ -62,7 +62,7 @@ export default function AddVideoPage() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        height: "100%",
         background: "var(--tv-bg)",
         color: "var(--tv-text)",
         fontFamily: "var(--font-geist-mono), monospace",

@@ -2,6 +2,11 @@ import type { NextRequest } from "next/server";
 import { prisma } from "@/shared/lib/prisma";
 import { generateContinuousSchedule } from "@/shared/lib/generateSchedule";
 
+export async function GET() {
+  const videos = await prisma.video.findMany({ orderBy: { title: "asc" } });
+  return Response.json({ videos });
+}
+
 function parseIso8601Duration(iso: string): number {
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!m) return 0;
