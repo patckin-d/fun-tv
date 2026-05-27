@@ -36,7 +36,8 @@ export function TvPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [playerKey, setPlayerKey] = useState(0);
   const [volume, setVolume] = useState(0.8);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [startOffset, setStartOffset] = useState(0);
 
   useEffect(() => {
     fetch(`/api/schedule?date=${localDateStr(new Date())}`)
@@ -47,9 +48,16 @@ export function TvPage() {
         const liveIdx = data.findIndex(
           (e) => new Date(e.startsAt) <= now && now < new Date(e.endsAt),
         );
+        if (liveIdx >= 0) {
+          const elapsed = Math.max(
+            0,
+            Math.floor((now.getTime() - new Date(data[liveIdx].startsAt).getTime()) / 1000),
+          );
+          setStartOffset(elapsed);
+        }
         setCurrentIdx(liveIdx >= 0 ? liveIdx : 0);
-        setIsLoading(false);
         setPlayerKey((k) => k + 1);
+        setIsLoading(false)
       });
   }, []);
 
@@ -59,6 +67,7 @@ export function TvPage() {
     const next = currentIdx + 1;
     if (next < entries.length) {
       setCurrentIdx(next);
+      setStartOffset(0);
       setPlayerKey((k) => k + 1);
     }
   };
@@ -203,6 +212,7 @@ export function TvPage() {
             animKey={playerKey}
             volume={volume}
             muted={muted}
+            startOffset={startOffset}
           />
         )}
       </div>

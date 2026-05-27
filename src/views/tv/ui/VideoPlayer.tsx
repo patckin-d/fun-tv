@@ -9,9 +9,10 @@ interface VideoPlayerProps {
   animKey: number;
   volume: number;
   muted: boolean;
+  startOffset?: number;
 }
 
-export function VideoPlayer({ video, onEnded, animKey, volume, muted }: VideoPlayerProps) {
+export function VideoPlayer({ video, onEnded, animKey, volume, muted, startOffset }: VideoPlayerProps) {
   if (!video) {
     return (
       <div
@@ -32,7 +33,7 @@ export function VideoPlayer({ video, onEnded, animKey, volume, muted }: VideoPla
     );
   }
 
-  const src = `https://www.youtube.com/watch?v=${video.videoId}`;
+  const src = `https://www.youtube.com/watch?v=${video.videoId}?t=${startOffset ?? 0}s`;
 
   return (
     <div key={animKey} className="relative w-full h-full channel-in crt-scanlines">
@@ -45,14 +46,17 @@ export function VideoPlayer({ video, onEnded, animKey, volume, muted }: VideoPla
         width="100%"
         height="100%"
         onEnded={onEnded}
+        autoPlay={true}
         config={{
           youtube: {
+            referrerpolicy: "strict-origin-when-cross-origin",
+            start: startOffset ?? 0,
             controls: 0,
             rel: 0,
-            modestbranding: 1,
             iv_load_policy: 3,
             disablekb: 1,
             fs: 0,
+            cc_load_policy: 0,
           } as Record<string, unknown>,
         }}
       />
