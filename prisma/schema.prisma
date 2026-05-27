@@ -23,7 +23,8 @@ model Channel {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  videos Video[]
+  videos          Video[]
+  scheduleEntries ScheduleEntry[]
 
   @@index([isActive, sortOrder])
   @@map("channels")
@@ -43,9 +44,26 @@ model Video {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channel         Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  scheduleEntries ScheduleEntry[]
 
   @@index([channelId, isActive, sortOrder])
   @@index([channelId, isActive])
   @@map("videos")
+}
+
+model ScheduleEntry {
+  id        String   @id @default(cuid())
+  channelId String
+  videoId   String
+  startsAt  DateTime
+  endsAt    DateTime
+  createdAt DateTime @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  video   Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([channelId, startsAt])
+  @@index([startsAt])
+  @@map("schedule_entries")
 }
