@@ -1,4 +1,4 @@
-import { TvPage } from "@/pages/tv";
+import { TvPage } from "@/views/tv";
 
 export default function Page() {
   return <TvPage />;

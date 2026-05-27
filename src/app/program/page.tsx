@@ -1,4 +1,4 @@
-import { ProgramPage } from "@/pages/program/ui/ProgramPage";
+import { ProgramPage } from "@/views/program/ui/ProgramPage";
 
 export default function Page() {
   return <ProgramPage />;
