@@ -47,6 +47,7 @@ export function VideoPlayer({ video, onEnded, animKey, volume, muted, startOffse
         height="100%"
         onEnded={onEnded}
         autoPlay={true}
+        light={false}
         config={{
           youtube: {
             referrerpolicy: "strict-origin-when-cross-origin",
