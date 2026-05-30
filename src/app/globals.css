@@ -16,15 +16,15 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Manrope", system-ui, sans-serif;
-  --font-display: "Dela Gothic One", sans-serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-display: var(--font-dela-gothic-one), sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--tv-bg);
   color: var(--tv-text);
-  font-family: "Manrope", system-ui, sans-serif;
+  font-family: var(--font-manrope), system-ui, sans-serif;
   overflow: hidden;
 }
 
@@ -39,8 +39,12 @@ body {
 
 /* CRT scanline overlay */
 @keyframes scanlines {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 4px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 4px;
+  }
 }
 
 .crt-scanlines::after {
@@ -61,8 +65,14 @@ body {
 
 /* Channel switching fade */
 @keyframes channelIn {
-  from { opacity: 0; transform: scale(1.01); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(1.01);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .channel-in {
@@ -71,8 +81,13 @@ body {
 
 /* Amber glow pulse on active channel */
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(244, 168, 41, 0.2); }
-  50%       { box-shadow: 0 0 16px rgba(244, 168, 41, 0.5); }
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(244, 168, 41, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(244, 168, 41, 0.5);
+  }
 }
 
 .active-channel-glow {
@@ -81,9 +96,23 @@ body {
 
 /* Static noise flicker on channel switch */
 @keyframes staticFlash {
-  0%, 100% { opacity: 0; }
-  10%, 30%, 50%, 70%, 90% { opacity: 0.06; }
-  20%, 40%, 60%, 80% { opacity: 0.03; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    opacity: 0.06;
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    opacity: 0.03;
+  }
 }
 
 .static-flash {

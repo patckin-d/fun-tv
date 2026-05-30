@@ -24,7 +24,9 @@ export function ScheduleItem({ entry, isLive }: ScheduleItemProps) {
         width: "100%",
         padding: "12px 16px",
         background: isLive ? "rgba(244,168,41,0.06)" : "transparent",
-        borderLeft: isLive ? "3px solid rgba(244,168,41,0.4)" : "3px solid transparent",
+        borderLeft: isLive
+          ? "3px solid rgba(244,168,41,0.4)"
+          : "3px solid transparent",
       }}
     >
       {/* Time */}

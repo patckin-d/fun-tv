@@ -15,10 +15,10 @@ export function VideoCard({ video, isActive, onClick }: VideoCardProps) {
     <button
       onClick={onClick}
       className={cn(
-        "group relative flex flex-col gap-2 shrink-0 w-44 rounded-xl overflow-hidden transition-all duration-200 text-left",
+        "group relative flex w-44 shrink-0 flex-col gap-2 overflow-hidden rounded-xl text-left transition-all duration-200",
         isActive
           ? "scale-[1.02]"
-          : "opacity-70 hover:opacity-100 hover:scale-[1.01]"
+          : "opacity-70 hover:scale-[1.01] hover:opacity-100",
       )}
       style={
         isActive
@@ -30,20 +30,19 @@ export function VideoCard({ video, isActive, onClick }: VideoCardProps) {
       }
     >
       {/* Thumbnail */}
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl">
         {video.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={video.thumbnailUrl}
             alt={video.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
           <div
-            className="w-full h-full flex items-center justify-center"
+            className="flex h-full w-full items-center justify-center"
             style={{
-              background:
-                "linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)",
+              background: "linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)",
             }}
           >
             <span className="text-3xl opacity-40">📺</span>
@@ -57,13 +56,13 @@ export function VideoCard({ video, isActive, onClick }: VideoCardProps) {
             style={{ background: "rgba(244,168,41,0.15)" }}
           >
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center"
+              className="flex h-10 w-10 items-center justify-center rounded-full"
               style={{ background: "var(--tv-accent)" }}
             >
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-5 h-5 text-black ml-0.5"
+                className="ml-0.5 h-5 w-5 text-black"
               >
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -74,7 +73,7 @@ export function VideoCard({ video, isActive, onClick }: VideoCardProps) {
         {/* Duration badge */}
         {video.durationSec != null && (
           <span
-            className="absolute bottom-1.5 right-1.5 text-white rounded px-1 py-0.5 font-mono"
+            className="absolute right-1.5 bottom-1.5 rounded px-1 py-0.5 font-mono text-white"
             style={{
               fontSize: "10px",
               background: "rgba(0,0,0,0.75)",
@@ -88,7 +87,7 @@ export function VideoCard({ video, isActive, onClick }: VideoCardProps) {
 
       {/* Title */}
       <p
-        className="px-1 pb-1 leading-snug line-clamp-2"
+        className="line-clamp-2 px-1 pb-1 leading-snug"
         style={{
           fontSize: "11px",
           color: isActive ? "var(--tv-accent)" : "var(--tv-text)",

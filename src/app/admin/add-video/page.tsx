@@ -24,7 +24,8 @@ function fmtDuration(sec: number | null | undefined): string {
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);
   const s = sec % 60;
-  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  if (h > 0)
+    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
@@ -33,14 +34,18 @@ export default function AddVideoPage() {
 
   // Single mode
   const [input, setInput] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [result, setResult] = useState<AddResult | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Bulk mode
   const [bulkInput, setBulkInput] = useState("");
-  const [bulkStatus, setBulkStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [bulkStatus, setBulkStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [bulkResult, setBulkResult] = useState<BulkResult | null>(null);
   const [bulkErrorMsg, setBulkErrorMsg] = useState("");
 
@@ -76,7 +81,10 @@ export default function AddVideoPage() {
 
   async function handleBulkSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const lines = bulkInput.split("\n").map((l) => l.trim()).filter(Boolean);
+    const lines = bulkInput
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
     if (lines.length === 0 || bulkStatus === "loading") return;
 
     setBulkStatus("loading");
@@ -134,7 +142,14 @@ export default function AddVideoPage() {
         }}
       />
 
-      <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: "480px" }}>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          width: "100%",
+          maxWidth: "480px",
+        }}
+      >
         {/* Header */}
         <div style={{ marginBottom: "36px" }}>
           <div
@@ -219,7 +234,8 @@ export default function AddVideoPage() {
                 background: mode === m ? "var(--tv-accent)" : "transparent",
                 color: mode === m ? "#080808" : "var(--tv-muted)",
                 border: "none",
-                borderRight: m === "single" ? "1px solid var(--tv-border)" : "none",
+                borderRight:
+                  m === "single" ? "1px solid var(--tv-border)" : "none",
                 fontFamily: "inherit",
                 fontSize: "11px",
                 fontWeight: 700,
@@ -236,7 +252,10 @@ export default function AddVideoPage() {
         {/* Single mode form */}
         {mode === "single" && (
           <>
-            <form onSubmit={handleSingleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <form
+              onSubmit={handleSingleSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
               <div
                 style={{
                   display: "flex",
@@ -287,15 +306,22 @@ export default function AddVideoPage() {
                 type="submit"
                 disabled={!input.trim() || status === "loading"}
                 style={{
-                  background: status === "loading" ? "transparent" : "var(--tv-accent)",
+                  background:
+                    status === "loading" ? "transparent" : "var(--tv-accent)",
                   color: status === "loading" ? "var(--tv-muted)" : "#080808",
-                  border: status === "loading" ? "1px solid var(--tv-border)" : "1px solid var(--tv-accent)",
+                  border:
+                    status === "loading"
+                      ? "1px solid var(--tv-border)"
+                      : "1px solid var(--tv-accent)",
                   fontFamily: "inherit",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
                   padding: "13px 20px",
-                  cursor: !input.trim() || status === "loading" ? "not-allowed" : "pointer",
+                  cursor:
+                    !input.trim() || status === "loading"
+                      ? "not-allowed"
+                      : "pointer",
                   transition: "background 0.15s, color 0.15s",
                   alignSelf: "flex-start",
                 }}
@@ -341,7 +367,14 @@ export default function AddVideoPage() {
                     borderBottom: "1px solid rgba(244,168,41,0.15)",
                   }}
                 >
-                  <span style={{ fontSize: "10px", color: "var(--tv-accent)", letterSpacing: "0.14em", fontWeight: 700 }}>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: "var(--tv-accent)",
+                      letterSpacing: "0.14em",
+                      fontWeight: 700,
+                    }}
+                  >
                     ✓ ДОБАВЛЕНО В РАСПИСАНИЕ
                   </span>
                 </div>
@@ -367,7 +400,15 @@ export default function AddVideoPage() {
                     </div>
                   )}
 
-                  <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: "6px", minWidth: 0 }}>
+                  <div
+                    style={{
+                      padding: "12px 16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      minWidth: 0,
+                    }}
+                  >
                     <p
                       style={{
                         margin: 0,
@@ -383,14 +424,29 @@ export default function AddVideoPage() {
                     >
                       {result.video.title}
                     </p>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "2px", marginTop: "4px" }}>
-                      <span style={{ fontSize: "11px", color: "var(--tv-muted)" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "2px",
+                        marginTop: "4px",
+                      }}
+                    >
+                      <span
+                        style={{ fontSize: "11px", color: "var(--tv-muted)" }}
+                      >
                         Длительность:{" "}
-                        <span style={{ color: "var(--tv-accent)" }}>{fmtDuration(result.video.durationSec)}</span>
+                        <span style={{ color: "var(--tv-accent)" }}>
+                          {fmtDuration(result.video.durationSec)}
+                        </span>
                       </span>
-                      <span style={{ fontSize: "11px", color: "var(--tv-muted)" }}>
+                      <span
+                        style={{ fontSize: "11px", color: "var(--tv-muted)" }}
+                      >
                         Записей в расписании:{" "}
-                        <span style={{ color: "var(--tv-text)" }}>{result.scheduleEntriesCreated}</span>
+                        <span style={{ color: "var(--tv-text)" }}>
+                          {result.scheduleEntriesCreated}
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -403,7 +459,10 @@ export default function AddVideoPage() {
         {/* Bulk mode form */}
         {mode === "bulk" && (
           <>
-            <form onSubmit={handleBulkSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <form
+              onSubmit={handleBulkSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
               <div
                 style={{
                   background: "var(--tv-surface, #111)",
@@ -417,7 +476,9 @@ export default function AddVideoPage() {
                     setBulkInput(e.target.value);
                     if (bulkStatus === "error") setBulkStatus("idle");
                   }}
-                  placeholder={"dQw4w9WgXcQ\nhttps://youtube.com/watch?v=…\nabc123xyz"}
+                  placeholder={
+                    "dQw4w9WgXcQ\nhttps://youtube.com/watch?v=…\nabc123xyz"
+                  }
                   disabled={bulkStatus === "loading"}
                   autoFocus
                   spellCheck={false}
@@ -447,9 +508,19 @@ export default function AddVideoPage() {
                       letterSpacing: "0.1em",
                     }}
                   >
-                    {bulkLines} {bulkLines === 1 ? "видео" : bulkLines < 5 ? "видео" : "видео"}
+                    {bulkLines}{" "}
+                    {bulkLines === 1
+                      ? "видео"
+                      : bulkLines < 5
+                        ? "видео"
+                        : "видео"}
                     {bulkLines > 50 && (
-                      <span style={{ color: "rgba(255,80,80,0.8)", marginLeft: "8px" }}>
+                      <span
+                        style={{
+                          color: "rgba(255,80,80,0.8)",
+                          marginLeft: "8px",
+                        }}
+                      >
                         — превышен лимит 50
                       </span>
                     )}
@@ -459,22 +530,38 @@ export default function AddVideoPage() {
 
               <button
                 type="submit"
-                disabled={bulkLines === 0 || bulkLines > 50 || bulkStatus === "loading"}
+                disabled={
+                  bulkLines === 0 || bulkLines > 50 || bulkStatus === "loading"
+                }
                 style={{
-                  background: bulkStatus === "loading" ? "transparent" : "var(--tv-accent)",
-                  color: bulkStatus === "loading" ? "var(--tv-muted)" : "#080808",
-                  border: bulkStatus === "loading" ? "1px solid var(--tv-border)" : "1px solid var(--tv-accent)",
+                  background:
+                    bulkStatus === "loading"
+                      ? "transparent"
+                      : "var(--tv-accent)",
+                  color:
+                    bulkStatus === "loading" ? "var(--tv-muted)" : "#080808",
+                  border:
+                    bulkStatus === "loading"
+                      ? "1px solid var(--tv-border)"
+                      : "1px solid var(--tv-accent)",
                   fontFamily: "inherit",
                   fontSize: "12px",
                   fontWeight: 700,
                   letterSpacing: "0.14em",
                   padding: "13px 20px",
-                  cursor: bulkLines === 0 || bulkLines > 50 || bulkStatus === "loading" ? "not-allowed" : "pointer",
+                  cursor:
+                    bulkLines === 0 ||
+                    bulkLines > 50 ||
+                    bulkStatus === "loading"
+                      ? "not-allowed"
+                      : "pointer",
                   transition: "background 0.15s, color 0.15s",
                   alignSelf: "flex-start",
                 }}
               >
-                {bulkStatus === "loading" ? "ЗАГРУЗКА…" : `ДОБАВИТЬ ${bulkLines > 0 ? bulkLines : ""}`}
+                {bulkStatus === "loading"
+                  ? "ЗАГРУЗКА…"
+                  : `ДОБАВИТЬ ${bulkLines > 0 ? bulkLines : ""}`}
               </button>
             </form>
 
@@ -515,10 +602,23 @@ export default function AddVideoPage() {
                     borderBottom: "1px solid rgba(244,168,41,0.15)",
                   }}
                 >
-                  <span style={{ fontSize: "10px", color: "var(--tv-accent)", letterSpacing: "0.14em", fontWeight: 700 }}>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: "var(--tv-accent)",
+                      letterSpacing: "0.14em",
+                      fontWeight: 700,
+                    }}
+                  >
                     РЕЗУЛЬТАТЫ ИМПОРТА
                   </span>
-                  <span style={{ fontSize: "10px", color: "var(--tv-muted)", letterSpacing: "0.08em" }}>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: "var(--tv-muted)",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
                     расписание: {bulkResult.scheduleEntriesCreated} записей
                   </span>
                 </div>
@@ -533,7 +633,9 @@ export default function AddVideoPage() {
                         gap: "10px",
                         padding: "8px 12px",
                         borderBottom:
-                          i < bulkResult.results.length - 1 ? "1px solid rgba(244,168,41,0.08)" : "none",
+                          i < bulkResult.results.length - 1
+                            ? "1px solid rgba(244,168,41,0.08)"
+                            : "none",
                       }}
                     >
                       <span
@@ -549,14 +651,21 @@ export default function AddVideoPage() {
                                 : "rgba(255,100,100,0.9)",
                         }}
                       >
-                        {item.status === "added" ? "+" : item.status === "updated" ? "~" : "✗"}
+                        {item.status === "added"
+                          ? "+"
+                          : item.status === "updated"
+                            ? "~"
+                            : "✗"}
                       </span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p
                           style={{
                             margin: 0,
                             fontSize: "12px",
-                            color: item.status === "error" ? "rgba(255,100,100,0.8)" : "var(--tv-text)",
+                            color:
+                              item.status === "error"
+                                ? "rgba(255,100,100,0.8)"
+                                : "var(--tv-text)",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -565,13 +674,25 @@ export default function AddVideoPage() {
                           {item.status === "error" ? item.rawInput : item.title}
                         </p>
                         {item.status === "error" && item.error && (
-                          <p style={{ margin: "2px 0 0", fontSize: "10px", color: "rgba(255,100,100,0.6)" }}>
+                          <p
+                            style={{
+                              margin: "2px 0 0",
+                              fontSize: "10px",
+                              color: "rgba(255,100,100,0.6)",
+                            }}
+                          >
                             {item.error}
                           </p>
                         )}
                       </div>
                       {item.status !== "error" && (
-                        <span style={{ fontSize: "10px", color: "var(--tv-muted)", flexShrink: 0 }}>
+                        <span
+                          style={{
+                            fontSize: "10px",
+                            color: "var(--tv-muted)",
+                            flexShrink: 0,
+                          }}
+                        >
                           {fmtDuration(item.durationSec)}
                         </span>
                       )}

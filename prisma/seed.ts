@@ -17,13 +17,13 @@ const PLATFORM_YOUTUBE: Platform = "YOUTUBE";
 function parseIso8601Duration(iso: string): number {
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!m) return 0;
-  return (+(m[1] ?? 0)) * 3600 + (+(m[2] ?? 0)) * 60 + (+(m[3] ?? 0));
+  return +(m[1] ?? 0) * 3600 + +(m[2] ?? 0) * 60 + +(m[3] ?? 0);
 }
 
 async function fetchYoutubeInfo(videoId: string, apiKey: string) {
   const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`;
   const res = await fetch(url);
-  const data = await res.json() as {
+  const data = (await res.json()) as {
     items?: Array<{
       snippet: {
         title: string;
@@ -95,7 +95,12 @@ async function main() {
     if (existing) {
       await prisma.video.update({
         where: { id: existing.id },
-        data: { title: info.title, thumbnailUrl: info.thumbnailUrl, durationSec: info.durationSec, sortOrder: i },
+        data: {
+          title: info.title,
+          thumbnailUrl: info.thumbnailUrl,
+          durationSec: info.durationSec,
+          sortOrder: i,
+        },
       });
     } else {
       await prisma.video.create({
@@ -120,9 +125,16 @@ async function main() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const scheduleData = generateContinuousSchedule(perviyKanal.id, videos, today, 7);
+  const scheduleData = generateContinuousSchedule(
+    perviyKanal.id,
+    videos,
+    today,
+    7,
+  );
 
-  await prisma.scheduleEntry.deleteMany({ where: { channelId: perviyKanal.id } });
+  await prisma.scheduleEntry.deleteMany({
+    where: { channelId: perviyKanal.id },
+  });
   await prisma.scheduleEntry.createMany({ data: scheduleData });
 
   console.log(

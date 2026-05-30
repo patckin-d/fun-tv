@@ -1,5 +1,5 @@
-const DAY_START_HOUR = 6;  // 06:00
-const DAY_END_HOUR = 26;   // 02:00 next day (24 + 2)
+const DAY_START_HOUR = 6; // 06:00
+const DAY_END_HOUR = 26; // 02:00 next day (24 + 2)
 
 interface VideoSlot {
   id: string;

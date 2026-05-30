@@ -10,7 +10,7 @@ export async function GET() {
 function parseIso8601Duration(iso: string): number {
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!m) return 0;
-  return (+(m[1] ?? 0)) * 3600 + (+(m[2] ?? 0)) * 60 + (+(m[3] ?? 0));
+  return +(m[1] ?? 0) * 3600 + +(m[2] ?? 0) * 60 + +(m[3] ?? 0);
 }
 
 function extractVideoId(input: string): string {
@@ -26,12 +26,15 @@ function extractVideoId(input: string): string {
 export async function POST(request: NextRequest) {
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) {
-    return Response.json({ error: "YOUTUBE_API_KEY not configured" }, { status: 500 });
+    return Response.json(
+      { error: "YOUTUBE_API_KEY not configured" },
+      { status: 500 },
+    );
   }
 
   let body: { videoId?: string };
   try {
-    body = await request.json() as { videoId?: string };
+    body = (await request.json()) as { videoId?: string };
   } catch {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
@@ -46,20 +49,32 @@ export async function POST(request: NextRequest) {
   const ytUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`;
   let ytData: {
     items?: Array<{
-      snippet: { title: string; thumbnails?: { high?: { url: string }; default?: { url: string } } };
-      contentDetails: { duration: string; contentRating?: { ytRating?: string } };
+      snippet: {
+        title: string;
+        thumbnails?: { high?: { url: string }; default?: { url: string } };
+      };
+      contentDetails: {
+        duration: string;
+        contentRating?: { ytRating?: string };
+      };
     }>;
   };
   try {
     const res = await fetch(ytUrl);
-    ytData = await res.json() as typeof ytData;
+    ytData = (await res.json()) as typeof ytData;
   } catch {
-    return Response.json({ error: "Failed to reach YouTube API" }, { status: 502 });
+    return Response.json(
+      { error: "Failed to reach YouTube API" },
+      { status: 502 },
+    );
   }
 
   const item = ytData.items?.[0];
   if (!item) {
-    return Response.json({ error: `Video not found on YouTube: ${videoId}` }, { status: 404 });
+    return Response.json(
+      { error: `Video not found on YouTube: ${videoId}` },
+      { status: 404 },
+    );
   }
 
   const title = item.snippet.title;
@@ -68,7 +83,8 @@ export async function POST(request: NextRequest) {
     item.snippet.thumbnails?.default?.url ??
     null;
   const durationSec = parseIso8601Duration(item.contentDetails.duration);
-  const isAgeRestricted = item.contentDetails.contentRating?.ytRating === "ytAgeRestricted";
+  const isAgeRestricted =
+    item.contentDetails.contentRating?.ytRating === "ytAgeRestricted";
 
   // Find the default channel
   const channel = await prisma.channel.findFirst({
@@ -119,7 +135,12 @@ export async function POST(request: NextRequest) {
     orderBy: { sortOrder: "asc" },
   });
 
-  const scheduleData = generateContinuousSchedule(channel.id, allVideos, tomorrow, 7);
+  const scheduleData = generateContinuousSchedule(
+    channel.id,
+    allVideos,
+    tomorrow,
+    7,
+  );
 
   await prisma.scheduleEntry.deleteMany({
     where: { channelId: channel.id, startsAt: { gte: tomorrow } },
@@ -127,7 +148,12 @@ export async function POST(request: NextRequest) {
   await prisma.scheduleEntry.createMany({ data: scheduleData });
 
   return Response.json({
-    video: { id: video.id, title: video.title, durationSec: video.durationSec, thumbnailUrl: video.thumbnailUrl },
+    video: {
+      id: video.id,
+      title: video.title,
+      durationSec: video.durationSec,
+      thumbnailUrl: video.thumbnailUrl,
+    },
     scheduleEntriesCreated: scheduleData.length,
   });
 }

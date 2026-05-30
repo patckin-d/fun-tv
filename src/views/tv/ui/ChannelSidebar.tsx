@@ -16,10 +16,14 @@ interface ChannelSidebarProps {
   onSelect: (channel: Channel) => void;
 }
 
-export function ChannelSidebar({ channels, selected, onSelect }: ChannelSidebarProps) {
+export function ChannelSidebar({
+  channels,
+  selected,
+  onSelect,
+}: ChannelSidebarProps) {
   return (
     <aside
-      className="flex flex-col gap-1 py-4 px-2 w-[72px] shrink-0"
+      className="flex w-[72px] shrink-0 flex-col gap-1 px-2 py-4"
       style={{ borderRight: "1px solid var(--tv-border)" }}
     >
       {channels.map((ch) => {
@@ -30,10 +34,10 @@ export function ChannelSidebar({ channels, selected, onSelect }: ChannelSidebarP
             onClick={() => onSelect(ch)}
             title={ch.title}
             className={cn(
-              "relative flex flex-col items-center gap-1 rounded-lg py-3 px-1 text-xs transition-all duration-200",
+              "relative flex flex-col items-center gap-1 rounded-lg px-1 py-3 text-xs transition-all duration-200",
               isActive
                 ? "active-channel-glow text-[var(--tv-accent)]"
-                : "text-[var(--tv-muted)] hover:text-[var(--tv-text)]"
+                : "text-[var(--tv-muted)] hover:text-[var(--tv-text)]",
             )}
             style={
               isActive
@@ -48,7 +52,7 @@ export function ChannelSidebar({ channels, selected, onSelect }: ChannelSidebarP
               {CHANNEL_ICONS[ch.slug] ?? "📺"}
             </span>
             <span
-              className="leading-tight text-center"
+              className="text-center leading-tight"
               style={{ fontSize: "9px", letterSpacing: "0.04em" }}
             >
               {ch.title.split(" ")[0]}

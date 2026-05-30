@@ -15,7 +15,9 @@ export function VideoListClient({ initialVideos }: Props) {
 
   async function handleToggleActive(video: Video) {
     const next = !video.isActive;
-    setVideos((prev) => prev.map((v) => (v.id === video.id ? { ...v, isActive: next } : v)));
+    setVideos((prev) =>
+      prev.map((v) => (v.id === video.id ? { ...v, isActive: next } : v)),
+    );
     setPendingIds((prev) => new Set(prev).add(video.id));
     try {
       const res = await fetch(`/api/admin/videos/${video.id}`, {
@@ -25,12 +27,22 @@ export function VideoListClient({ initialVideos }: Props) {
       });
       const updated = (await res.json()) as Video;
       if (res.ok) {
-        setVideos((prev) => prev.map((v) => (v.id === updated.id ? updated : v)));
+        setVideos((prev) =>
+          prev.map((v) => (v.id === updated.id ? updated : v)),
+        );
       } else {
-        setVideos((prev) => prev.map((v) => (v.id === video.id ? { ...v, isActive: video.isActive } : v)));
+        setVideos((prev) =>
+          prev.map((v) =>
+            v.id === video.id ? { ...v, isActive: video.isActive } : v,
+          ),
+        );
       }
     } catch {
-      setVideos((prev) => prev.map((v) => (v.id === video.id ? { ...v, isActive: video.isActive } : v)));
+      setVideos((prev) =>
+        prev.map((v) =>
+          v.id === video.id ? { ...v, isActive: video.isActive } : v,
+        ),
+      );
     } finally {
       setPendingIds((prev) => {
         const s = new Set(prev);
@@ -67,9 +79,23 @@ export function VideoListClient({ initialVideos }: Props) {
         }}
       />
 
-      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%" }}>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
         {/* Header */}
-        <div style={{ padding: "32px 32px 20px", flexShrink: 0, borderBottom: "1px solid var(--tv-border)" }}>
+        <div
+          style={{
+            padding: "32px 32px 20px",
+            flexShrink: 0,
+            borderBottom: "1px solid var(--tv-border)",
+          }}
+        >
           <div
             style={{
               display: "inline-flex",
@@ -107,7 +133,14 @@ export function VideoListClient({ initialVideos }: Props) {
           >
             Видеотека
           </h1>
-          <p style={{ margin: "6px 0 0", fontSize: "12px", color: "var(--tv-muted)", letterSpacing: "0.02em" }}>
+          <p
+            style={{
+              margin: "6px 0 0",
+              fontSize: "12px",
+              color: "var(--tv-muted)",
+              letterSpacing: "0.02em",
+            }}
+          >
             {activeCount} активных из {videos.length}
           </p>
         </div>
@@ -203,8 +236,12 @@ export function VideoListClient({ initialVideos }: Props) {
                       style={{
                         borderBottom: "1px solid rgba(255,255,255,0.04)",
                         cursor: "pointer",
-                        background: isSelected ? "rgba(244,168,41,0.06)" : "transparent",
-                        borderLeft: isSelected ? "3px solid var(--tv-accent)" : "3px solid transparent",
+                        background: isSelected
+                          ? "rgba(244,168,41,0.06)"
+                          : "transparent",
+                        borderLeft: isSelected
+                          ? "3px solid var(--tv-accent)"
+                          : "3px solid transparent",
                         transition: "background 0.1s",
                       }}
                     >
@@ -268,7 +305,10 @@ export function VideoListClient({ initialVideos }: Props) {
                         )}
                       </td>
                       <td
-                        style={{ padding: "12px 32px 12px 16px", textAlign: "center" }}
+                        style={{
+                          padding: "12px 32px 12px 16px",
+                          textAlign: "center",
+                        }}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <label
@@ -276,7 +316,9 @@ export function VideoListClient({ initialVideos }: Props) {
                             display: "inline-flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            cursor: pendingIds.has(video.id) ? "wait" : "pointer",
+                            cursor: pendingIds.has(video.id)
+                              ? "wait"
+                              : "pointer",
                             width: "20px",
                             height: "20px",
                             position: "relative",
@@ -293,11 +335,14 @@ export function VideoListClient({ initialVideos }: Props) {
                               width: "16px",
                               height: "16px",
                               border: `1px solid ${video.isActive ? "var(--tv-accent)" : "var(--tv-muted)"}`,
-                              background: video.isActive ? "var(--tv-accent)" : "transparent",
+                              background: video.isActive
+                                ? "var(--tv-accent)"
+                                : "transparent",
                               cursor: "inherit",
                               flexShrink: 0,
                               opacity: pendingIds.has(video.id) ? 0.5 : 1,
-                              transition: "background 0.15s, border-color 0.15s",
+                              transition:
+                                "background 0.15s, border-color 0.15s",
                             }}
                           />
                           {video.isActive && (
@@ -408,7 +453,9 @@ export function VideoListClient({ initialVideos }: Props) {
                 {selectedVideo.durationSec != null && (
                   <div style={{ fontSize: "11px", color: "var(--tv-muted)" }}>
                     Длительность:{" "}
-                    <span style={{ color: "var(--tv-accent)" }}>{formatDuration(selectedVideo.durationSec)}</span>
+                    <span style={{ color: "var(--tv-accent)" }}>
+                      {formatDuration(selectedVideo.durationSec)}
+                    </span>
                   </div>
                 )}
                 {selectedVideo.isAgeRestricted && (

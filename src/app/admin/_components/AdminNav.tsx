@@ -46,7 +46,9 @@ export function AdminNav() {
               textTransform: "uppercase",
               textDecoration: "none",
               color: active ? "var(--tv-accent)" : "var(--tv-muted)",
-              borderBottom: active ? "2px solid var(--tv-accent)" : "2px solid transparent",
+              borderBottom: active
+                ? "2px solid var(--tv-accent)"
+                : "2px solid transparent",
               transition: "color 0.15s",
             }}
           >

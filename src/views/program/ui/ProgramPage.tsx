@@ -25,15 +25,23 @@ function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
-function formatColHeader(date: Date): { weekday: string; day: string; month: string } {
+function formatColHeader(date: Date): {
+  weekday: string;
+  day: string;
+  month: string;
+} {
   return {
-    weekday: date.toLocaleDateString("ru-RU", { weekday: "short" }).toUpperCase(),
+    weekday: date
+      .toLocaleDateString("ru-RU", { weekday: "short" })
+      .toUpperCase(),
     day: String(date.getDate()),
     month: date.toLocaleDateString("ru-RU", { month: "long" }),
   };
 }
 
-function groupByChannel(entries: ScheduleEntry[]): Record<string, ScheduleEntry[]> {
+function groupByChannel(
+  entries: ScheduleEntry[],
+): Record<string, ScheduleEntry[]> {
   return entries.reduce<Record<string, ScheduleEntry[]>>((acc, e) => {
     if (!acc[e.channel.title]) acc[e.channel.title] = [];
     acc[e.channel.title].push(e);
@@ -47,20 +55,26 @@ export function ProgramPage() {
     d.setHours(0, 0, 0, 0);
     return d;
   });
-  const [scheduleByDay, setScheduleByDay] = useState<Record<string, ScheduleEntry[]>>({});
+  const [scheduleByDay, setScheduleByDay] = useState<
+    Record<string, ScheduleEntry[]>
+  >({});
   const [now, setNow] = useState(new Date());
-  const [isLoading, setIsLoading] = useState(true);
+  const [loadedStartDate, setLoadedStartDate] = useState<Date | null>(null);
 
   const days = [0, 1, 2].map((i) => addDays(startDate, i));
+  const isLoading = loadedStartDate?.getTime() !== startDate.getTime();
 
   useEffect(() => {
-    setIsLoading(true);
-    Promise.all(days.map((d) => getSchedule(localDateStr(d)))).then((results) => {
-      const map: Record<string, ScheduleEntry[]> = {};
-      days.forEach((d, i) => { map[localDateStr(d)] = results[i]; });
-      setScheduleByDay(map);
-      setIsLoading(false);
-    });
+    Promise.all(days.map((d) => getSchedule(localDateStr(d)))).then(
+      (results) => {
+        const map: Record<string, ScheduleEntry[]> = {};
+        days.forEach((d, i) => {
+          map[localDateStr(d)] = results[i];
+        });
+        setScheduleByDay(map);
+        setLoadedStartDate(startDate);
+      },
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate]);
 
@@ -76,12 +90,12 @@ export function ProgramPage() {
 
   return (
     <main
-      className="flex flex-col h-screen w-screen overflow-hidden"
+      className="flex h-screen w-screen flex-col overflow-hidden"
       style={{ background: "var(--tv-bg)", color: "var(--tv-text)" }}
     >
       {/* Header */}
       <header
-        className="flex items-center justify-between px-5 shrink-0"
+        className="flex shrink-0 items-center justify-between px-5"
         style={{
           height: "48px",
           borderBottom: "1px solid var(--tv-border)",
@@ -97,7 +111,7 @@ export function ProgramPage() {
           <span
             className="tracking-widest select-none"
             style={{
-              fontFamily: "'Dela Gothic One', sans-serif",
+              fontFamily: "var(--font-dela-gothic-one), sans-serif",
               fontSize: "18px",
               color: "var(--tv-accent)",
               textShadow: "0 0 12px rgba(244,168,41,0.5)",
@@ -137,8 +151,12 @@ export function ProgramPage() {
                     minWidth: "90px",
                     padding: "2px 8px",
                     borderRadius: "4px",
-                    background: isToday ? "rgba(244,168,41,0.1)" : "transparent",
-                    border: isToday ? "1px solid rgba(244,168,41,0.3)" : "1px solid transparent",
+                    background: isToday
+                      ? "rgba(244,168,41,0.1)"
+                      : "transparent",
+                    border: isToday
+                      ? "1px solid rgba(244,168,41,0.3)"
+                      : "1px solid transparent",
                   }}
                 >
                   <span
@@ -198,7 +216,7 @@ export function ProgramPage() {
           return (
             <div
               key={key}
-              className="flex flex-col flex-1 overflow-hidden"
+              className="flex flex-1 flex-col overflow-hidden"
               style={{
                 borderRight: colIdx < 2 ? "1px solid var(--tv-border)" : "none",
                 background: isToday ? "rgba(244,168,41,0.02)" : "var(--tv-bg)",
@@ -209,7 +227,9 @@ export function ProgramPage() {
                 style={{
                   padding: "10px 16px",
                   borderBottom: "1px solid var(--tv-border)",
-                  background: isToday ? "rgba(244,168,41,0.06)" : "var(--tv-surface)",
+                  background: isToday
+                    ? "rgba(244,168,41,0.06)"
+                    : "var(--tv-surface)",
                   flexShrink: 0,
                 }}
               >
@@ -227,62 +247,75 @@ export function ProgramPage() {
                   </span>
                 )}
                 <span
-                  className="uppercase tracking-widest"
-                  style={{ fontSize: "11px", color: isToday ? "var(--tv-accent)" : "var(--tv-muted)" }}
+                  className="tracking-widest uppercase"
+                  style={{
+                    fontSize: "11px",
+                    color: isToday ? "var(--tv-accent)" : "var(--tv-muted)",
+                  }}
                 >
-                  {formatColHeader(day).weekday},{" "}
-                  {formatColHeader(day).day} {formatColHeader(day).month}
+                  {formatColHeader(day).weekday}, {formatColHeader(day).day}{" "}
+                  {formatColHeader(day).month}
                 </span>
               </div>
 
               {/* Entries */}
               <div className="flex-1 overflow-y-auto">
                 {isLoading ? (
-                  <div className="flex items-center justify-center h-24">
+                  <div className="flex h-24 items-center justify-center">
                     <div
-                      className="w-5 h-5 rounded-full border-2 animate-spin"
-                      style={{ borderColor: "var(--tv-accent)", borderTopColor: "transparent" }}
+                      className="h-5 w-5 animate-spin rounded-full border-2"
+                      style={{
+                        borderColor: "var(--tv-accent)",
+                        borderTopColor: "transparent",
+                      }}
                     />
                   </div>
                 ) : Object.keys(byChannel).length === 0 ? (
                   <div
-                    className="flex items-center justify-center h-24"
+                    className="flex h-24 items-center justify-center"
                     style={{ color: "var(--tv-muted)", fontSize: "12px" }}
                   >
                     нет передач
                   </div>
                 ) : (
-                  Object.entries(byChannel).map(([channelTitle, channelEntries]) => (
-                    <div key={channelTitle}>
-                      <div
-                        className="sticky top-0 px-4 py-2"
-                        style={{
-                          background: isToday ? "rgba(244,168,41,0.04)" : "var(--tv-surface)",
-                          borderBottom: "1px solid var(--tv-border)",
-                          zIndex: 1,
-                        }}
-                      >
-                        <span
-                          className="text-xs uppercase tracking-[0.2em]"
-                          style={{ color: "var(--tv-accent)", fontWeight: 600 }}
+                  Object.entries(byChannel).map(
+                    ([channelTitle, channelEntries]) => (
+                      <div key={channelTitle}>
+                        <div
+                          className="sticky top-0 px-4 py-2"
+                          style={{
+                            background: isToday
+                              ? "rgba(244,168,41,0.04)"
+                              : "var(--tv-surface)",
+                            borderBottom: "1px solid var(--tv-border)",
+                            zIndex: 1,
+                          }}
                         >
-                          {channelTitle}
-                        </span>
-                      </div>
+                          <span
+                            className="text-xs tracking-[0.2em] uppercase"
+                            style={{
+                              color: "var(--tv-accent)",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {channelTitle}
+                          </span>
+                        </div>
 
-                      {channelEntries.map((entry) => (
-                        <ScheduleItem
-                          key={entry.id}
-                          entry={entry}
-                          isLive={
-                            isToday &&
-                            new Date(entry.startsAt) <= now &&
-                            now < new Date(entry.endsAt)
-                          }
-                        />
-                      ))}
-                    </div>
-                  ))
+                        {channelEntries.map((entry) => (
+                          <ScheduleItem
+                            key={entry.id}
+                            entry={entry}
+                            isLive={
+                              isToday &&
+                              new Date(entry.startsAt) <= now &&
+                              now < new Date(entry.endsAt)
+                            }
+                          />
+                        ))}
+                      </div>
+                    ),
+                  )
                 )}
               </div>
             </div>

@@ -49,7 +49,10 @@ export function TvPage() {
   const [startOffset, setStartOffset] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   // Badge is visible when key matches; threshold drives the label
-  const [badgeState, setBadgeState] = useState<{ key: number; threshold: number } | null>(null);
+  const [badgeState, setBadgeState] = useState<{
+    key: number;
+    threshold: number;
+  } | null>(null);
   const showNextBadge = badgeState?.key === playerKey;
 
   const videoWallStartRef = useRef(0);
@@ -82,17 +85,22 @@ export function TvPage() {
         if (liveIdx >= 0) {
           const elapsed = Math.max(
             0,
-            Math.floor((now.getTime() - new Date(data[liveIdx].startsAt).getTime()) / 1000),
+            Math.floor(
+              (now.getTime() - new Date(data[liveIdx].startsAt).getTime()) /
+                1000,
+            ),
           );
           setStartOffset(elapsed);
         }
         setCurrentIdx(liveIdx >= 0 ? liveIdx : 0);
         setPlayerKey((k) => k + 1);
-        setIsLoading(false)
+        setIsLoading(false);
       });
   }, []);
 
-  const currentVideo = entries[currentIdx] ? entryToVideo(entries[currentIdx]) : null;
+  const currentVideo = entries[currentIdx]
+    ? entryToVideo(entries[currentIdx])
+    : null;
   const nextEntry = entries[currentIdx + 1] ?? null;
 
   // Poll every second; show badge when remaining time crosses a threshold
@@ -102,7 +110,9 @@ export function TvPage() {
 
     // Initialize wall-clock reference and pre-mark already-elapsed thresholds
     videoWallStartRef.current = Date.now() - startOffset * 1000;
-    shownThresholdsRef.current = new Set(NEXT_BADGE_THRESHOLDS.filter(t => initialRemaining <= t));
+    shownThresholdsRef.current = new Set(
+      NEXT_BADGE_THRESHOLDS.filter((t) => initialRemaining <= t),
+    );
     if (badgeTimerRef.current) {
       clearTimeout(badgeTimerRef.current);
       badgeTimerRef.current = null;
@@ -120,7 +130,10 @@ export function TvPage() {
           shownThresholdsRef.current.add(t);
           setBadgeState({ key, threshold: t });
           if (badgeTimerRef.current) clearTimeout(badgeTimerRef.current);
-          badgeTimerRef.current = setTimeout(() => setBadgeState(null), NEXT_BADGE_SHOW_MS);
+          badgeTimerRef.current = setTimeout(
+            () => setBadgeState(null),
+            NEXT_BADGE_SHOW_MS,
+          );
           break;
         }
       }
@@ -148,12 +161,12 @@ export function TvPage() {
 
   return (
     <main
-      className="flex flex-col h-screen w-screen overflow-hidden"
+      className="flex h-screen w-screen flex-col overflow-hidden"
       style={{ background: "var(--tv-bg)", color: "var(--tv-text)" }}
     >
       {/* Header */}
       <header
-        className="flex items-center justify-between px-5 shrink-0"
+        className="flex shrink-0 items-center justify-between px-5"
         style={{
           height: "48px",
           borderBottom: "1px solid var(--tv-border)",
@@ -163,7 +176,7 @@ export function TvPage() {
         <span
           className="tracking-widest select-none"
           style={{
-            fontFamily: "'Dela Gothic One', sans-serif",
+            fontFamily: "var(--font-dela-gothic-one), sans-serif",
             fontSize: "18px",
             color: "var(--tv-accent)",
             textShadow: "0 0 12px rgba(244,168,41,0.5)",
@@ -174,7 +187,7 @@ export function TvPage() {
 
         {channelTitle && (
           <span
-            className="uppercase tracking-[0.2em]"
+            className="tracking-[0.2em] uppercase"
             style={{ fontSize: "11px", color: "var(--tv-muted)" }}
           >
             {channelTitle}
@@ -185,7 +198,11 @@ export function TvPage() {
           <Link
             href="/program"
             className="tracking-wider uppercase"
-            style={{ fontSize: "11px", color: "var(--tv-muted)", textDecoration: "none" }}
+            style={{
+              fontSize: "11px",
+              color: "var(--tv-muted)",
+              textDecoration: "none",
+            }}
           >
             Программа
           </Link>
@@ -193,7 +210,11 @@ export function TvPage() {
           <Link
             href="/admin/videos"
             className="tracking-wider uppercase"
-            style={{ fontSize: "11px", color: "var(--tv-muted)", textDecoration: "none" }}
+            style={{
+              fontSize: "11px",
+              color: "var(--tv-muted)",
+              textDecoration: "none",
+            }}
           >
             Админка
           </Link>
@@ -215,7 +236,10 @@ export function TvPage() {
               {muted ? "🔇" : "🔊"}
             </button>
             <button
-              onClick={() => { setMuted(false); setVolume((v) => Math.max(0, +(v - 0.1).toFixed(1))); }}
+              onClick={() => {
+                setMuted(false);
+                setVolume((v) => Math.max(0, +(v - 0.1).toFixed(1)));
+              }}
               style={{
                 background: "none",
                 border: "none",
@@ -240,7 +264,10 @@ export function TvPage() {
               {muted ? "0%" : `${Math.round(volume * 100)}%`}
             </span>
             <button
-              onClick={() => { setMuted(false); setVolume((v) => Math.min(1, +(v + 0.1).toFixed(1))); }}
+              onClick={() => {
+                setMuted(false);
+                setVolume((v) => Math.min(1, +(v + 0.1).toFixed(1)));
+              }}
               style={{
                 background: "none",
                 border: "none",
@@ -257,7 +284,9 @@ export function TvPage() {
 
           <button
             onClick={toggleFullscreen}
-            title={isFullscreen ? "Выйти из полноэкранного режима" : "На весь экран"}
+            title={
+              isFullscreen ? "Выйти из полноэкранного режима" : "На весь экран"
+            }
             style={{
               background: "none",
               border: "none",
@@ -270,12 +299,22 @@ export function TvPage() {
             }}
           >
             {isFullscreen ? (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                <path d="M5 0v2H2v3H0V0h5zM9 0h5v5h-2V2H9V0zM0 9h2v3h3v2H0V9zM12 9h2v5H9v-2h3V9z"/>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="currentColor"
+              >
+                <path d="M5 0v2H2v3H0V0h5zM9 0h5v5h-2V2H9V0zM0 9h2v3h3v2H0V9zM12 9h2v5H9v-2h3V9z" />
               </svg>
             ) : (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                <path d="M0 0h5v2H2v3H0V0zM9 0h5v5h-2V2H9V0zM0 9h2v3h3v2H0V9zM12 9h2v5H9v-2h3V9z"/>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="currentColor"
+              >
+                <path d="M0 0h5v2H2v3H0V0zM9 0h5v5h-2V2H9V0zM0 9h2v3h3v2H0V9zM12 9h2v5H9v-2h3V9z" />
               </svg>
             )}
           </button>
@@ -285,7 +324,7 @@ export function TvPage() {
             style={{ fontSize: "11px", color: "var(--tv-muted)" }}
           >
             <span
-              className="inline-block w-1.5 h-1.5 rounded-full"
+              className="inline-block h-1.5 w-1.5 rounded-full"
               style={{ background: "#22c55e", boxShadow: "0 0 6px #22c55e" }}
             />
             <span className="tracking-wider uppercase">LIVE</span>
@@ -294,12 +333,18 @@ export function TvPage() {
       </header>
 
       {/* Body */}
-      <div className="flex-1 overflow-hidden relative" style={{ background: "#000" }}>
+      <div
+        className="relative flex-1 overflow-hidden"
+        style={{ background: "#000" }}
+      >
         {isLoading ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex h-full items-center justify-center">
             <div
-              className="w-8 h-8 rounded-full border-2 animate-spin"
-              style={{ borderColor: "var(--tv-accent)", borderTopColor: "transparent" }}
+              className="h-8 w-8 animate-spin rounded-full border-2"
+              style={{
+                borderColor: "var(--tv-accent)",
+                borderTopColor: "transparent",
+              }}
             />
           </div>
         ) : (
@@ -315,7 +360,7 @@ export function TvPage() {
 
         {!isLoading && showNextBadge && nextEntry && (
           <div
-            className="absolute bottom-6 right-6 z-20"
+            className="absolute right-6 bottom-6 z-20"
             style={{
               width: "400px",
               background: "rgba(8,8,8,0.88)",
@@ -326,7 +371,7 @@ export function TvPage() {
             }}
           >
             <span
-              className="uppercase tracking-wider"
+              className="tracking-wider uppercase"
               style={{ fontSize: "10px", color: "var(--tv-muted)" }}
             >
               Далее в программе{" "}
@@ -334,10 +379,14 @@ export function TvPage() {
                 {THRESHOLD_LABELS[badgeState?.threshold ?? 0] ?? ""}
               </span>
             </span>
-            <div className="flex items-center gap-3 mt-2">
+            <div className="mt-2 flex items-center gap-3">
               <span
-                className="flex-1 line-clamp-2"
-                style={{ fontSize: "12px", color: "var(--tv-text)", lineHeight: "1.4" }}
+                className="line-clamp-2 flex-1"
+                style={{
+                  fontSize: "12px",
+                  color: "var(--tv-text)",
+                  lineHeight: "1.4",
+                }}
               >
                 {nextEntry.video.title}
               </span>
@@ -346,7 +395,7 @@ export function TvPage() {
                   src={nextEntry.video.thumbnailUrl}
                   width={80}
                   height={45}
-                  className="shrink-0 object-cover rounded-sm"
+                  className="shrink-0 rounded-sm object-cover"
                   alt=""
                 />
               )}

@@ -3,19 +3,22 @@ import { prisma } from "@/shared/lib/prisma";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
 
   let body: { isActive?: boolean };
   try {
-    body = await request.json() as { isActive?: boolean };
+    body = (await request.json()) as { isActive?: boolean };
   } catch {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   if (typeof body.isActive !== "boolean") {
-    return Response.json({ error: "isActive (boolean) is required" }, { status: 400 });
+    return Response.json(
+      { error: "isActive (boolean) is required" },
+      { status: 400 },
+    );
   }
 
   try {

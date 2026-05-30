@@ -12,11 +12,18 @@ interface VideoPlayerProps {
   startOffset?: number;
 }
 
-export function VideoPlayer({ video, onEnded, animKey, volume, muted, startOffset }: VideoPlayerProps) {
+export function VideoPlayer({
+  video,
+  onEnded,
+  animKey,
+  volume,
+  muted,
+  startOffset,
+}: VideoPlayerProps) {
   if (!video) {
     return (
       <div
-        className="w-full h-full flex flex-col items-center justify-center gap-4"
+        className="flex h-full w-full flex-col items-center justify-center gap-4"
         style={{ background: "var(--tv-surface)" }}
       >
         <span className="text-6xl opacity-20">📺</span>
@@ -36,7 +43,10 @@ export function VideoPlayer({ video, onEnded, animKey, volume, muted, startOffse
   const src = `https://www.youtube.com/watch?v=${video.videoId}?t=${startOffset ?? 0}s`;
 
   return (
-    <div key={animKey} className="relative w-full h-full channel-in crt-scanlines">
+    <div
+      key={animKey}
+      className="channel-in crt-scanlines relative h-full w-full"
+    >
       <ReactPlayer
         src={src}
         playing
